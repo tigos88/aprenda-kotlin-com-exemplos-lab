@@ -1,21 +1,52 @@
-// [Template no Kotlin Playground](https://pl.kotl.in/WcteahpyN)
-
 enum class Nivel { BASICO, INTERMEDIARIO, DIFICIL }
 
-class Usuario
+data class Usuario(val nome: String)
 
-data class ConteudoEducacional(var nome: String, val duracao: Int = 60)
+data class ConteudoEducacional(
+    val nome: String,
+    val duracao: Int = 60,
+    val nivel: Nivel = Nivel.BASICO
+)
 
-data class Formacao(val nome: String, var conteudos: List<ConteudoEducacional>) {
-
+data class Formacao(
+    val nome: String,
+    val conteudos: MutableList<ConteudoEducacional>,
+    val capacidade: Int = 10
+) {
     val inscritos = mutableListOf<Usuario>()
-    
-    fun matricular(usuario: Usuario) {
-        TODO("Utilize o parâmetro $usuario para simular uma matrícula (usar a lista de $inscritos).")
+
+    fun matricular(usuario: Usuario): Boolean {
+        if (inscritos.contains(usuario)) {
+            println("${usuario.nome} já está matriculado em \"$nome\".")
+            return false
+        }
+        if (inscritos.size >= capacidade) {
+            println("Sem vagas para $nome.")
+            return false
+        }
+        inscritos.add(usuario)
+        println("${usuario.nome} matriculado em \"$nome\".")
+        return true
     }
 }
 
 fun main() {
-    TODO("Analise as classes modeladas para este domínio de aplicação e pense em formas de evoluí-las.")
-    TODO("Simule alguns cenários de teste. Para isso, crie alguns objetos usando as classes em questão.")
+    val basico = ConteudoEducacional("Kotlin Básico", 90, Nivel.BASICO)
+    val medio = ConteudoEducacional("POO com Kotlin", 120, Nivel.INTERMEDIARIO)
+
+    val formacao = Formacao("Formação Kotlin", mutableListOf(basico, medio))
+
+    val a = Usuario("Ana")
+    val b = Usuario("Bruno")
+    val c = Usuario("Carla")
+
+    formacao.matricular(a)
+    formacao.matricular(b)
+    formacao.matricular(a)
+    formacao.matricular(c)
+
+    println("Inscritos:")
+    for (i in formacao.inscritos) {
+        println(i.nome)
+    }
 }
